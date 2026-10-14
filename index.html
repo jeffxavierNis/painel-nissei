@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestão à Vista - Nissei</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #002b5e; /* Azul escuro da Nissei */
+            overflow: hidden;
+        }
+        .slide {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+        .active { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <!-- Imagens que serão geradas pelo robô diariamente -->
+    <img src="slide_01.jpg" class="slide active" alt="Gestão à Vista">
+    <img src="slide_02.jpg" class="slide" alt="Grandes Players - Medicamentos">
+    <img src="slide_03.jpg" class="slide" alt="Grandes Players - Não Medicamento">
+    <img src="slide_04.jpg" class="slide" alt="Grandes Players - Conveniência">
+
+    <script>
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        // Alterna os slides a cada 15 segundos (15000 milissegundos)
+        setInterval(() => {
+            slides[slideIndex].classList.remove('active');
+            slideIndex = (slideIndex + 1) % slides.length;
+            slides[slideIndex].classList.add('active');
+        }, 15000);
+
+        // Atualiza a página a cada 2 horas para puxar as imagens do novo dia
+        // sem precisar de mexer no rato da máquina da TV
+        setInterval(() => {
+            window.location.reload(true);
+        }, 7200000); 
+    </script>
+
+</body>
+</html>
