@@ -8,7 +8,7 @@ from pdf2image import convert_from_path
 
 SCOPES = ['https://www.googleapis.com/auth/drive.readonly']
 
-EMAIL_CORPORATIVO = 'jefferson.souza@nissei.com.br'  # Coloque o seu e-mail
+EMAIL_CORPORATIVO = 'jefferson.souza@nisseisa.com.br'  # Coloque o seu e-mail
 ID_DRIVE_COMPARTILHADO = '0AP4rIXpE1wnkUk9PVA' # ID da raiz do Drive Compartilhado
 
 credenciais_json = os.environ.get('GCP_CREDENTIALS')
