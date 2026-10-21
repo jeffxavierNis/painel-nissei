@@ -4,42 +4,48 @@
     <meta charset="UTF-8">
     <title>Gestão à Vista - Nissei</title>
     <style>
-        /* Remove qualquer margem e força a ocupar a tela inteira */
         body, html {
             margin: 0;
             padding: 0;
             width: 100vw;
             height: 100vh;
-            background-color: #002b5e; /* Azul Nissei para preencher bordas se a TV for mais larga */
+            background-color: #002b5e;
             overflow: hidden;
         }
         
-        /* Configuração de Tela Cheia para as Imagens */
         .slide {
             position: absolute;
             top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            /* object-fit: contain garante que a tabela não seja cortada. 
-               Se preferir que a imagem estique para não deixar nenhuma borda azul, 
-               mude a palavra "contain" para "fill" ou "cover" */
-            object-fit: contain; 
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
+            object-fit: contain;
+            /* Por padrão, as imagens ficam escondidas do lado direito da tela */
+            transform: translateX(100%);
+            transition: transform 1s ease-in-out;
         }
         
+        /* A classe do slide que está no centro da tela */
         .active {
-            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* A classe do slide que acabou de sair (escondido à esquerda) */
+        .exit {
+            transform: translateX(-100%);
+        }
+
+        /* Bloqueia a animação temporariamente para reposicionar os slides */
+        .no-transition {
+            transition: none !important;
         }
     </style>
 </head>
 <body>
 
-    <!-- Capa inicial estática (A imagem que você fez o upload) -->
+    <!-- Capa inicial -->
     <img src="capa.jpg" class="slide active" alt="Gestão à Vista - Capa">
     
-    <!-- Imagens das tabelas (Atualizadas pelo robô todos os dias) -->
+    <!-- Slides gerados pelo robô -->
     <img src="slide_01.jpg" class="slide" alt="Slide 1">
     <img src="slide_02.jpg" class="slide" alt="Slide 2">
     <img src="slide_03.jpg" class="slide" alt="Slide 3">
@@ -49,15 +55,31 @@
         let slideIndex = 0;
         const slides = document.querySelectorAll('.slide');
 
-        // Alterna os slides a cada 15 segundos (15000 ms)
+        // Alterna os slides a cada 15 segundos
         setInterval(() => {
-            slides[slideIndex].classList.remove('active');
+            let currentSlide = slides[slideIndex];
+            
+            // Calcula qual será o próximo slide
             slideIndex = (slideIndex + 1) % slides.length;
-            slides[slideIndex].classList.add('active');
+            let nextSlide = slides[slideIndex];
+
+            // 1. Prepara o próximo slide: move-o secretamente para a direita sem animação
+            nextSlide.classList.add('no-transition');
+            nextSlide.classList.remove('exit', 'active');
+            
+            // Força o navegador a reconhecer a posição antes de devolver a animação
+            void nextSlide.offsetWidth; 
+            nextSlide.classList.remove('no-transition');
+
+            // 2. Executa a transição animada (atual vai para esquerda, próximo vem da direita)
+            currentSlide.classList.remove('active');
+            currentSlide.classList.add('exit');
+            
+            nextSlide.classList.add('active');
+
         }, 15000);
 
-        // Recarrega a página invisivelmente a cada 2 horas (7200000 ms)
-        // Isso garante que a TV puxe os PDFs novos gerados pelo robô
+        // Recarrega a página invisivelmente a cada 2 horas para puxar os PDFs do dia
         setInterval(() => {
             window.location.reload(true);
         }, 7200000); 
