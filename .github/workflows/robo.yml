@@ -1,0 +1,38 @@
+name: Atualizar Gestao a Vista
+
+on:
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+
+jobs:
+  atualizar-painel:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Puxar os arquivos do repositorio
+      uses: actions/checkout@v3
+
+    - name: Instalar o leitor de PDF (poppler)
+      run: sudo apt-get install -y poppler-utils
+
+    - name: Preparar o Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Instalar bibliotecas Python
+      run: pip install -r requirements.txt
+
+    - name: Executar o Script (Baixar e Recortar PDF)
+      env:
+        GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+      run: python atualizador.py
+
+    - name: Salvar as imagens e enviar para a pagina
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action Bot"
+        git add slide_*.jpg
+        git commit -m "Atualizacao diaria do painel" || echo "Sem mudancas"
+        git push
