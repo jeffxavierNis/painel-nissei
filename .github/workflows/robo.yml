@@ -1,38 +1,80 @@
-name: Atualizar Gestao a Vista
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestão à Vista - Nissei</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #ffffff; 
+            overflow: hidden;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            /* 'contain' garante que 100% da imagem aparece, sem cortar o cabeçalho */
+            object-fit: contain; 
+            /* Removido o scale() para não aplicar zoom em nenhuma imagem */
+            transform: translateX(100%);
+            transition: transform 1s ease-in-out;
+        }
+        
+        .active {
+            transform: translateX(0);
+        }
 
-on:
-  schedule:
-    - cron: '0 10,13,15 * * *'
-  workflow_dispatch:
+        .exit {
+            transform: translateX(-100%);
+        }
 
-jobs:
-  atualizar-painel:
-    runs-on: ubuntu-latest
+        .no-transition {
+            transition: none !important;
+        }
+    </style>
+</head>
+<body>
 
-    steps:
-    - name: Puxar os arquivos do repositorio
-      uses: actions/checkout@v3
+    <!-- Capa inicial estática -->
+    <img src="capa.jpg" id="capa" class="slide active" alt="Gestão à Vista - Capa">
+    
+    <!-- Imagens das tabelas geradas pelo robô -->
+    <img src="slide_01.jpg" class="slide" alt="Slide 1">
+    <img src="slide_02.jpg" class="slide" alt="Slide 2">
+    <img src="slide_03.jpg" class="slide" alt="Slide 3">
+    <img src="slide_04.jpg" class="slide" alt="Slide 4">
 
-    - name: Instalar o leitor de PDF (poppler)
-      run: sudo apt-get install -y poppler-utils
+    <script>
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
 
-    - name: Preparar o Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
+        setInterval(() => {
+            let currentSlide = slides[slideIndex];
+            slideIndex = (slideIndex + 1) % slides.length;
+            let nextSlide = slides[slideIndex];
 
-    - name: Instalar bibliotecas Python
-      run: pip install -r requirements.txt
+            nextSlide.classList.add('no-transition');
+            nextSlide.classList.remove('exit', 'active');
+            
+            void nextSlide.offsetWidth; 
+            nextSlide.classList.remove('no-transition');
 
-    - name: Executar o Script (Baixar e Recortar PDF)
-      env:
-        GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
-      run: python atualizador.py
+            currentSlide.classList.remove('active');
+            currentSlide.classList.add('exit');
+            
+            nextSlide.classList.add('active');
 
-    - name: Salvar as imagens e enviar para a pagina
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action Bot"
-        git add slide_*.jpg
-        git commit -m "Atualizacao diaria do painel" || echo "Sem mudancas"
-        git push
+        }, 15000);
+
+        setInterval(() => {
+            window.location.reload(true);
+        }, 7200000); 
+    </script>
+
+</body>
+</html>
