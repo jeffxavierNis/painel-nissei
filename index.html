@@ -9,7 +9,6 @@
             padding: 0;
             width: 100vw;
             height: 100vh;
-            /* Fundo branco funde-se com as margens do PDF */
             background-color: #ffffff; 
             overflow: hidden;
         }
@@ -19,21 +18,29 @@
             top: 0;
             width: 100%;
             height: 100%;
-            /* Mantém as proporções reais do texto e dos logótipos sem os achatar */
             object-fit: cover; 
-            /* Desliza para a direita (100%) e aplica um zoom de 4% para cortar as margens brancas nativas */
+            /* Configuração padrão para os PDFs (com zoom de 4%) */
             transform: translateX(100%) scale(1.04);
             transition: transform 1s ease-in-out;
         }
+
+        /* Configuração específica para retirar o zoom da CAPA */
+        #capa {
+            transform: translateX(100%) scale(1);
+        }
         
         .active {
-            /* Slide no centro (0) com o zoom mantido */
             transform: translateX(0) scale(1.04);
+        }
+        #capa.active {
+            transform: translateX(0) scale(1);
         }
 
         .exit {
-            /* Slide sai pela esquerda (-100%) com o zoom mantido */
             transform: translateX(-100%) scale(1.04);
+        }
+        #capa.exit {
+            transform: translateX(-100%) scale(1);
         }
 
         .no-transition {
@@ -43,10 +50,10 @@
 </head>
 <body>
 
-    <!-- Capa inicial estática -->
-    <img src="capa.jpg" class="slide active" alt="Gestão à Vista - Capa">
+    <!-- Capa inicial sem o zoom (identificada com id="capa") -->
+    <img src="capa.jpg" id="capa" class="slide active" alt="Gestão à Vista - Capa">
     
-    <!-- Imagens das tabelas geradas automaticamente pelo robô -->
+    <!-- Imagens das tabelas geradas pelo robô -->
     <img src="slide_01.jpg" class="slide" alt="Slide 1">
     <img src="slide_02.jpg" class="slide" alt="Slide 2">
     <img src="slide_03.jpg" class="slide" alt="Slide 3">
@@ -56,23 +63,17 @@
         let slideIndex = 0;
         const slides = document.querySelectorAll('.slide');
 
-        // Alterna os slides a cada 15 segundos (15000 ms) com efeito contínuo
         setInterval(() => {
             let currentSlide = slides[slideIndex];
-            
-            // Calcula qual será o próximo slide
             slideIndex = (slideIndex + 1) % slides.length;
             let nextSlide = slides[slideIndex];
 
-            // 1. Prepara o próximo slide: move-o secretamente para a direita sem animação
             nextSlide.classList.add('no-transition');
             nextSlide.classList.remove('exit', 'active');
             
-            // Força o navegador a reconhecer a posição antes de devolver a animação
             void nextSlide.offsetWidth; 
             nextSlide.classList.remove('no-transition');
 
-            // 2. Executa a transição animada (atual vai para esquerda, próximo vem da direita)
             currentSlide.classList.remove('active');
             currentSlide.classList.add('exit');
             
@@ -80,7 +81,6 @@
 
         }, 15000);
 
-        // Recarrega a página de forma invisível a cada 2 horas para puxar as imagens do dia
         setInterval(() => {
             window.location.reload(true);
         }, 7200000); 
