@@ -13,13 +13,13 @@
             overflow: hidden;
         }
         
-        .slide {
+     .slide {
             position: absolute;
             top: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            /* Por padrão, as imagens ficam escondidas do lado direito da tela */
+            /* O comando 'fill' estica a imagem para colar nas 4 bordas da TV */
+            object-fit: fill; 
             transform: translateX(100%);
             transition: transform 1s ease-in-out;
         }
