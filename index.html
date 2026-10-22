@@ -9,32 +9,33 @@
             padding: 0;
             width: 100vw;
             height: 100vh;
-            background-color: #002b5e;
+            /* Fundo branco funde-se com as margens do PDF */
+            background-color: #ffffff; 
             overflow: hidden;
         }
         
-     .slide {
+        .slide {
             position: absolute;
             top: 0;
             width: 100%;
             height: 100%;
-            /* O comando 'fill' estica a imagem para colar nas 4 bordas da TV */
-            object-fit: fill; 
-            transform: translateX(100%);
+            /* Mantém as proporções reais do texto e dos logótipos sem os achatar */
+            object-fit: cover; 
+            /* Desliza para a direita (100%) e aplica um zoom de 4% para cortar as margens brancas nativas */
+            transform: translateX(100%) scale(1.04);
             transition: transform 1s ease-in-out;
         }
         
-        /* A classe do slide que está no centro da tela */
         .active {
-            transform: translateX(0);
+            /* Slide no centro (0) com o zoom mantido */
+            transform: translateX(0) scale(1.04);
         }
 
-        /* A classe do slide que acabou de sair (escondido à esquerda) */
         .exit {
-            transform: translateX(-100%);
+            /* Slide sai pela esquerda (-100%) com o zoom mantido */
+            transform: translateX(-100%) scale(1.04);
         }
 
-        /* Bloqueia a animação temporariamente para reposicionar os slides */
         .no-transition {
             transition: none !important;
         }
@@ -42,10 +43,10 @@
 </head>
 <body>
 
-    <!-- Capa inicial -->
+    <!-- Capa inicial estática -->
     <img src="capa.jpg" class="slide active" alt="Gestão à Vista - Capa">
     
-    <!-- Slides gerados pelo robô -->
+    <!-- Imagens das tabelas geradas automaticamente pelo robô -->
     <img src="slide_01.jpg" class="slide" alt="Slide 1">
     <img src="slide_02.jpg" class="slide" alt="Slide 2">
     <img src="slide_03.jpg" class="slide" alt="Slide 3">
@@ -55,7 +56,7 @@
         let slideIndex = 0;
         const slides = document.querySelectorAll('.slide');
 
-        // Alterna os slides a cada 15 segundos
+        // Alterna os slides a cada 15 segundos (15000 ms) com efeito contínuo
         setInterval(() => {
             let currentSlide = slides[slideIndex];
             
@@ -79,7 +80,7 @@
 
         }, 15000);
 
-        // Recarrega a página invisivelmente a cada 2 horas para puxar os PDFs do dia
+        // Recarrega a página de forma invisível a cada 2 horas para puxar as imagens do dia
         setInterval(() => {
             window.location.reload(true);
         }, 7200000); 
