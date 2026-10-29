@@ -28,21 +28,21 @@
 
         .carousel-container {
             position: relative;
-            width: 95vw; 
-            max-height: 95vh; 
-            aspect-ratio: 16 / 9;
+            width: 96vw; 
+            height: 94vh; 
             border-radius: 12px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            background-color: transparent;
+            /* O fundo branco disfarça as margens do PDF, fundindo tudo numa só peça */
+            background-color: #ffffff;
             overflow: hidden;
             z-index: 2;
         }
 
         .logo-nissei {
             position: absolute;
-            bottom: 40px;
-            right: 50px;
-            width: 280px;
+            bottom: 30px;
+            right: 40px;
+            width: 250px;
             z-index: 10;
             filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.6));
         }
@@ -54,21 +54,34 @@
             width: 100%;
             height: 100%;
             object-fit: contain; 
-            background-color: transparent;
-            transform: translateX(100%);
+            transform-origin: center center;
+            
+            /* 
+               scale(1.06) dá um zoom de 6% para maximizar o tamanho sem cortar o topo.
+               Se ainda cortar algo, mude para 1.04. Se quiser maior, mude para 1.08.
+            */
+            transform: translateX(100%) scale(1.06);
             transition: transform 1s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        #capa {
-            object-fit: cover;
-        }
-
         .active {
-            transform: translateX(0);
+            transform: translateX(0) scale(1.06);
         }
 
         .exit {
-            transform: translateX(-100%);
+            transform: translateX(-100%) scale(1.06);
+        }
+
+        /* A capa tem definições separadas para não ter nenhum zoom e preencher o ecrã todo */
+        #capa {
+            object-fit: cover;
+            transform: translateX(100%) scale(1);
+        }
+        #capa.active {
+            transform: translateX(0) scale(1);
+        }
+        #capa.exit {
+            transform: translateX(-100%) scale(1);
         }
 
         .no-transition {
