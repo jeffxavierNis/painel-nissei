@@ -16,26 +16,39 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            font-family: sans-serif;
         }
 
         /* Máscara que escurece e desfoca o fundo, destacando a apresentação */
         .overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6); 
-            backdrop-filter: blur(8px); /* Cria um efeito de vidro fosco */
+            background: rgba(0, 0, 0, 0.5); 
+            backdrop-filter: blur(10px); /* Efeito de vidro fosco */
             z-index: 1;
         }
 
+        /* Contêiner principal com bordas arredondadas e sombra flutuante */
         .carousel-container {
             position: relative;
-            width: 95vw; 
-            height: 95vh; 
+            width: 94vw; 
+            height: 92vh; 
             border-radius: 12px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             background-color: #ffffff;
             overflow: hidden;
             z-index: 2;
+        }
+
+        /* Configuração do Logo Nissei Flutuante */
+        .logo-nissei {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            width: 160px; /* Ajuste o tamanho da sua logo aqui */
+            z-index: 10;
+            /* Leve sombra para destacar a logo em fundos claros ou escuros */
+            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.6));
         }
 
         .slide {
@@ -77,8 +90,11 @@
 
     <div class="overlay"></div>
 
+    <!-- O ficheiro Nissei.png foi atualizado aqui -->
+    <img src="Nissei.png" class="logo-nissei" alt="Logo Nissei">
+
     <div class="carousel-container">
-        <!-- O atributo data-time define os milissegundos que a imagem ficará na tela -->
+        <!-- O atributo data-time define os milissegundos que a imagem ficará na ecrã -->
         <!-- 15000 = 15 segundos para a Capa | 45000 = 45 segundos para os Relatórios -->
         <img src="capa.jpg" id="capa" class="slide active" alt="Gestão à Vista - Capa" data-time="15000">
         
@@ -91,8 +107,8 @@
     <script>
         let slideIndex = 0;
         const slides = document.querySelectorAll('.slide');
+        let timer; 
 
-        // Função que realiza a troca e agenda a próxima
         function showNextSlide() {
             let currentSlide = slides[slideIndex];
             slideIndex = (slideIndex + 1) % slides.length;
@@ -101,7 +117,7 @@
             nextSlide.classList.add('no-transition');
             nextSlide.classList.remove('exit', 'active');
             
-            void nextSlide.offsetWidth; // Força o reflow para a animação funcionar
+            void nextSlide.offsetWidth; 
             nextSlide.classList.remove('no-transition');
 
             currentSlide.classList.remove('active');
@@ -109,18 +125,15 @@
             
             nextSlide.classList.add('active');
 
-            // Lê o tempo configurado no HTML para a nova imagem que entrou na tela
             let nextTime = parseInt(nextSlide.getAttribute('data-time')) || 30000;
             
-            // Agenda a próxima troca
-            setTimeout(showNextSlide, nextTime);
+            clearTimeout(timer);
+            timer = setTimeout(showNextSlide, nextTime);
         }
 
-        // Dá o start inicial lendo o tempo da Capa
         let initialTime = parseInt(slides[0].getAttribute('data-time')) || 15000;
-        setTimeout(showNextSlide, initialTime);
+        timer = setTimeout(showNextSlide, initialTime);
 
-        // Atualiza a página inteira a cada 2 horas para garantir que as imagens novas sejam carregadas
         setInterval(() => {
             window.location.reload(true);
         }, 7200000); 
